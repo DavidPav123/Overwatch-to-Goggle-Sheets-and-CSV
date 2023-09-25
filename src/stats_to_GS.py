@@ -4,7 +4,8 @@ from csv import reader
 from time import sleep
 from csv import writer
 from google_sheets_push import update_sheet
-import platform
+from platform import release
+from json import load
 
 # List of pages for google sheets to write to
 pages_to_update: str = [
@@ -23,16 +24,14 @@ range_name: str = f"{pages_to_update[current_page]}!A1:Z26"
 # Name of the current map
 cur_map: str = ""
 
+def get_spreadsheet_pages():
+    with open("config.json", 'r') as file:
+        data = load(file)
+        return data.get("Spreadsheet Pages", None)
 
-"""def get_latest_file() -> str:
-    #Use for normal douments folder
-    #list_of_files: list[str] = glob(f"{expanduser('~/Documents')}/Overwatch/Workshop/*")
-    list_of_files: list[str] = glob(f"{expanduser('~/')}/OneDrive/Documents/Overwatch/Workshop/*")
-    latest_file: str = max(list_of_files, key=getctime)
-    return latest_file""" 
 
 def get_latest_file() -> str:
-    win_version = platform.release()
+    win_version = release()
     list_of_files = []
     
     if win_version == "10":
@@ -120,6 +119,7 @@ def export_to_csv(rows,file_name):
         write.writerows(rows)
 
 if __name__ == "__main__":
+    pages_to_update.
     file: str = get_latest_file()
 
     cur_map_temp: list[str] = check_file_change(file)
