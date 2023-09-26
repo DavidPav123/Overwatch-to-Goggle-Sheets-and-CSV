@@ -10,6 +10,6 @@
 
 ## Notes:
 - For now, the program will crash if there is no ***config.json*** file.
-- If the program accidently closes or crashes mid series, once it is reopened it will not upload again until the next match starts. Once its reopened, it will overwrite the previous data so be sure to move the previous data to a safe place before the next match starts.
-- CSV files will automatically be named ***game1-5.csv*** and will appear in the CSV folder.
+- If the program accidentally closes or crashes mid-series, once it is reopened, it will not upload again until the next match starts. Once it's reopened, it will overwrite the previous data, so be sure to move the previous data to a safe place before the next match starts.
+- CSV files will automatically be named ***game1–5.csv*** and will appear in the CSV folder.
 - If matches end before the limit of 5, close the program to stop it, all data is automatically uploaded and exported to CSV files.
