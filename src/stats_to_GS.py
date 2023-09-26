@@ -125,6 +125,7 @@ if __name__ == "__main__":
             stats = read_csv_file(file)
             export_to_csv(stats, f"{current_page}.csv")
             update_sheet(stats, range_name)
+            print("Match Data Exported")
 
         else:
             print("Waiting for data")
