@@ -123,7 +123,7 @@ if __name__ == "__main__":
 
         if 12 <= file_len(file) and current_page!=1:
             stats = read_csv_file(file)
-            export_to_csv(stats, f"{current_page}.csv")
+            export_to_csv(stats, f"{current_page -1}.csv")
             update_sheet(stats, range_name)
             print("Match Data Exported")
 
