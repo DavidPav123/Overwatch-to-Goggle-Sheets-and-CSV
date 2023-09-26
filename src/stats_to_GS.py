@@ -4,19 +4,11 @@ from csv import reader
 from time import sleep
 from csv import writer
 from google_sheets_push import update_sheet
-from platform import release
 from json import load
+from sys import getwindowsversion
 
-# List of pages for google sheets to write to
-pages_to_update: str = [
-    "Placeholder",  # DO NOT DELETE
-    "Placeholder2",  # DO NOT DELETE
-    "Sheet1",  # Change to page 1
-    "Sheet2",  # Change to page 2
-    "Sheet3",  # Change to page 3
-    "Sheet4",  # Change to page 4
-    "Sheet5",  # Chnage to page 5
-]
+# List of pages for google sheets to write toP
+pages_to_update: list = ["Placeholder1","Placeholder2"]
 # Variable for switching pages when new file is detected
 current_page: int = 0
 # Range to update in sheets change infor after
@@ -31,15 +23,13 @@ def get_spreadsheet_pages():
 
 
 def get_latest_file() -> str:
-    win_version = release()
+    win_version = getwindowsversion().build
     list_of_files = []
-    
-    if win_version == "10":
+
+    if win_version <= 22000:
         list_of_files = glob(f"{expanduser('~/Documents')}/Overwatch/Workshop/*")
-    elif win_version == "11":
-        list_of_files = glob(f"{expanduser('~/')}/OneDrive/Documents/Overwatch/Workshop/*")
     else:
-        print(f"This is neither Windows 10 nor Windows 11. Detected version: {win_version}")
+        list_of_files = glob(f"{expanduser('~/')}/OneDrive/Documents/Overwatch/Workshop/*")
 
     latest_file: str = max(list_of_files, key=getctime)
     return latest_file
@@ -119,20 +109,19 @@ def export_to_csv(rows,file_name):
         write.writerows(rows)
 
 if __name__ == "__main__":
-    pages_to_update.
+    pages_to_update.extend(get_spreadsheet_pages())
     file: str = get_latest_file()
-
     cur_map_temp: list[str] = check_file_change(file)
 
     while True:
         cur_map_temp: list[str] = check_file_change(file)
 
-        if cur_map != cur_map_temp:
+        if cur_map != cur_map_temp :
             cur_map = cur_map_temp
             current_page += 1
             range_name = update_page(pages_to_update, current_page)
 
-        if 12 <= file_len(file):
+        if 12 <= file_len(file) and current_page!=1:
             stats = read_csv_file(file)
             export_to_csv(stats, f"{current_page}.csv")
             update_sheet(stats, range_name)
