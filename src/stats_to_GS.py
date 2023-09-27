@@ -160,7 +160,10 @@ if __name__ == "__main__":
 
         if 12 <= file_len(file) and current_page!=1:
             stats = read_csv_file(file)
-            export_to_csv(stats, f"game{current_page -1}.csv")
+            try:
+                export_to_csv(stats, f"game{current_page -1}.csv")
+            except IOError:
+                print("CSV file is open, couldn't write!")
             if upload == True:
                 update_sheet(stats, range_name)
             print("Match Data Exported")
