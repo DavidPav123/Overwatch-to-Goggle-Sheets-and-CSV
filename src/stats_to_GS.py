@@ -6,6 +6,7 @@ from csv import writer
 from google_sheets_push import update_sheet
 from json import load
 from sys import getwindowsversion
+from os.path import exists
 
 # List of pages for google sheets to write toP
 pages_to_update: list = ["Placeholder1","Placeholder2"]
@@ -16,11 +17,16 @@ range_name: str = f"{pages_to_update[current_page]}!A1:Z26"
 # Name of the current map
 cur_map: str = ""
 
+    
+def get_spreadsheet_id():
+    with open("config.json", 'r') as file:
+        data = load(file)
+        return data.get("Spreadsheet ID", None)
+
 def get_spreadsheet_pages():
     with open("config.json", 'r') as file:
         data = load(file)
         return data.get("Spreadsheet Pages", None)
-
 
 def get_latest_file() -> str:
     win_version = getwindowsversion().build
@@ -33,7 +39,6 @@ def get_latest_file() -> str:
 
     latest_file: str = max(list_of_files, key=getctime)
     return latest_file
-
 
 def read_csv_file(file_to_read: str) -> list:
     row_data: list[list] = []
@@ -86,19 +91,16 @@ def read_csv_file(file_to_read: str) -> list:
         row_data.append(t2_rows)
     return row_data
 
-
 def check_file_change(file_to_read: str) -> list[str]:
     with open(file_to_read) as csv_file:
         csv_reader = reader(csv_file, delimiter=",")
         header: list[str] = next(csv_reader)
         return header
 
-
 def file_len(file_to_read: str) -> int:
     with open(file_to_read) as fp:
         lines: int = len(fp.readlines())
         return lines
-
 
 def update_page(page_list: list, current_page: int) -> str:
     return f"{page_list[current_page]}!A1:Z26"
@@ -109,7 +111,41 @@ def export_to_csv(rows,file_name):
         write.writerows(rows)
 
 if __name__ == "__main__":
-    pages_to_update.extend(get_spreadsheet_pages())
+    credentials_exist = exists("credentials.json")
+    spreadsheet_id_exists = False
+    spreadsheet_pages_exists = False
+
+    if credentials_exist:
+        try:
+            spreadsheet_id = get_spreadsheet_id()
+            if spreadsheet_id == "" or spreadsheet_id == None:
+                print("No spreadsheet ID found!")
+            else:
+                print(f"Uploading to spreadsheet ID: {spreadsheet_id}")
+                spreadsheet_id_exists = True
+
+        except:
+            print("No spreadsheet ID found!")
+        if spreadsheet_id_exists:
+            try:
+                pages_to_update_temp = get_spreadsheet_pages()
+                if pages_to_update_temp ==  [] or pages_to_update_temp == None:
+                    print("No spreadsheet pages found!")
+                else:
+                    print(f"Uploading to spreadsheet pages: {pages_to_update_temp}")
+                    pages_to_update.extend(pages_to_update_temp)
+                    spreadsheet_pages_exists = True
+            except:
+                print("No spreadsheet pages found!")
+    else:
+        print("No credentials.json found!")
+
+    if credentials_exist and spreadsheet_id_exists and spreadsheet_pages_exists:
+        upload = True
+    else:
+        upload = False
+        print("Not uploading to Google Sheets!")
+
     file: str = get_latest_file()
     cur_map_temp: list[str] = check_file_change(file)
 
@@ -119,12 +155,14 @@ if __name__ == "__main__":
         if cur_map != cur_map_temp :
             cur_map = cur_map_temp
             current_page += 1
-            range_name = update_page(pages_to_update, current_page)
+            if upload == True:
+                range_name = update_page(pages_to_update, current_page)
 
         if 12 <= file_len(file) and current_page!=1:
             stats = read_csv_file(file)
             export_to_csv(stats, f"game{current_page -1}.csv")
-            update_sheet(stats, range_name)
+            if upload == True:
+                update_sheet(stats, range_name)
             print("Match Data Exported")
 
         else:
