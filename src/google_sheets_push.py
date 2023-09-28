@@ -55,4 +55,4 @@ def update_sheet(values_to_update, range_to_update) -> None:
         )
         response = request.execute()
     except HttpError as err:
-        print("HTTP Error")
+        print(err)

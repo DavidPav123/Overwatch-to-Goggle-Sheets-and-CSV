@@ -1,12 +1,11 @@
 from glob import glob
 from os.path import getctime, expanduser
-from csv import reader
 from time import sleep
-from csv import writer
 from google_sheets_push import update_sheet
 from json import load
 from sys import getwindowsversion
 from os.path import exists
+import pandas as pd
 
 # List of pages for google sheets to write toP
 pages_to_update: list = ["Placeholder1","Placeholder2"]
@@ -40,31 +39,12 @@ def get_latest_file() -> str:
     latest_file: str = max(list_of_files, key=getctime)
     return latest_file
 
-def read_csv_file(file_to_read: str) -> list:
+def read_csv_file(file_to_read: str) -> pd.DataFrame:
     row_data: list[list] = []
     t1: list = []
     t2: list = []
-    file_length: int = file_len(file_to_read)
 
-    with open(file_to_read) as csv_file:
-        csv_reader = reader(csv_file, delimiter=",")
-        for numbers in range(file_length - 9, file_length + 1):
-            for rows in csv_reader:
-                if csv_reader.line_num == numbers:
-                    rows.pop(0)
-                    if rows[1] == "LÃºcio":
-                        rows[1] = "Lucio"
-                    elif rows[1] == "TorbjÃ¶rn":
-                        rows[1] = "Torbjorn"
-                    if rows[len(rows) - 1] == "Team 1":
-                        t1.insert(0, rows)
-                    else:
-                        t2.append(rows)
-                    break
-
-    row_data.insert(
-        0,
-        [
+    column_names = [
             "Player Name",
             "Hero Name",
             "Damage Dealt",
@@ -82,33 +62,27 @@ def read_csv_file(file_to_read: str) -> list:
             "Ults Earned",
             "Ults Used",
             "Healing Recived",
-            "Team",
-        ],
-    )
-    for t1_rows in t1:
-        row_data.append(t1_rows)
-    for t2_rows in t2:
-        row_data.append(t2_rows)
-    return row_data
+            "Team",]
+
+    df = pd.read_csv(file_to_read, skiprows=range(1, file_len(file_to_read) - 9), header=0, names=column_names, encoding="utf-8")
+
+    df['Hero Name'] = df['Hero Name'].replace({"LÃºcio": "Lucio", "TorbjÃ¶rn": "Torbjorn"})
+    df = df.sort_values(by='Team', ascending=False)
+    return df
 
 def check_file_change(file_to_read: str) -> list[str]:
-    with open(file_to_read) as csv_file:
-        csv_reader = reader(csv_file, delimiter=",")
-        header: list[str] = next(csv_reader)
-        return header
+    fp = pd.read_csv(file_to_read, nrows=0, encoding="utf-8")
+    return fp.columns.to_list()[0]
 
 def file_len(file_to_read: str) -> int:
-    with open(file_to_read) as fp:
-        lines: int = len(fp.readlines())
-        return lines
+    fp = pd.read_csv(file_to_read, encoding="utf-8")
+    return fp.shape[0]
 
 def update_page(page_list: list, current_page: int) -> str:
     return f"{page_list[current_page]}!A1:Z26"
 
-def export_to_csv(rows,file_name):
-    with open(f'CSVs/{file_name}', 'w') as f:
-        write = writer(f, delimiter=',', lineterminator="\n")
-        write.writerows(rows)
+def export_to_csv(df: pd.DataFrame, file_name: str):
+    df.to_csv(f'CSVs/{file_name}', index=False)
 
 if __name__ == "__main__":
     credentials_exist = exists("credentials.json")
@@ -160,12 +134,17 @@ if __name__ == "__main__":
 
         if 12 <= file_len(file) and current_page!=1:
             stats = read_csv_file(file)
+            #print([stats.columns].extend(stats.values.tolist()))
+            
             try:
                 export_to_csv(stats, f"game{current_page -1}.csv")
             except IOError:
                 print("CSV file is open, couldn't write!")
             if upload == True:
-                update_sheet(stats, range_name)
+                stuff_to_upload = []
+                stuff_to_upload.append(stats.columns.to_list())
+                stuff_to_upload.extend(stats.values.tolist())
+                update_sheet(stuff_to_upload, range_name)
             print("Match Data Exported")
 
         else:
