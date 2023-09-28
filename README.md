@@ -12,3 +12,4 @@
 - If the program accidentally closes or crashes mid-series, once it is reopened, it will not upload again until the next match starts. Once it's reopened, it will overwrite the previous data, so be sure to move the previous data to a safe place before the next match starts.
 - CSV files will automatically be named ***game1–5.csv*** and will appear in the CSV folder. If you open the CSV file mid-game, data will not be uploaded to the CSV file until it is closed.
 - If matches end before the limit of 5, close the program to stop it, all data is automatically uploaded and exported to CSV files.
+- If a player has not selected their character by the start of the match, no data will be exported and you will recieve an HTTP error until they do.
