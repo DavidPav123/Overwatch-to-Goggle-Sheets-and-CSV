@@ -1,11 +1,10 @@
-from glob import glob
-from os.path import getctime, expanduser
 from time import sleep
 from google_sheets_push import update_sheet
-from json import load
-from sys import getwindowsversion
 from os.path import exists
 import pandas as pd
+from src.json_functions import get_spreadsheet_id, get_spreadsheet_pages
+from src.get_latest_workship_file import get_latest_file
+from src.csv_functions import read_csv_file, export_to_csv, check_file_change, file_len
 
 # List of pages for google sheets to write toP
 pages_to_update: list = ["Placeholder1","Placeholder2"]
@@ -16,73 +15,8 @@ range_name: str = f"{pages_to_update[current_page]}!A1:Z26"
 # Name of the current map
 cur_map: str = ""
 
-    
-def get_spreadsheet_id():
-    with open("config.json", 'r') as file:
-        data = load(file)
-        return data.get("Spreadsheet ID", None)
-
-def get_spreadsheet_pages():
-    with open("config.json", 'r') as file:
-        data = load(file)
-        return data.get("Spreadsheet Pages", None)
-
-def get_latest_file() -> str:
-    win_version = getwindowsversion().build
-    list_of_files = []
-
-    if win_version <= 22000:
-        list_of_files = glob(f"{expanduser('~/Documents')}/Overwatch/Workshop/*")
-    else:
-        list_of_files = glob(f"{expanduser('~/')}/OneDrive/Documents/Overwatch/Workshop/*")
-
-    latest_file: str = max(list_of_files, key=getctime)
-    return latest_file
-
-def read_csv_file(file_to_read: str) -> pd.DataFrame:
-    row_data= []
-    t1 = []
-    t2 = []
-
-    column_names = [
-            "Player Name",
-            "Hero Name",
-            "Damage Dealt",
-            "Barrier Damage",
-            "Damage Blocked",
-            "Damage Taken",
-            "Deaths",
-            "Elims",
-            "Final Blows",
-            "Env Deaths",
-            "Env Kills",
-            "Healing",
-            "Obj Kills",
-            "solo kills",
-            "Ults Earned",
-            "Ults Used",
-            "Healing Recived",
-            "Team",]
-
-    df = pd.read_csv(file_to_read, skiprows=range(1, file_len(file_to_read) - 9), header=0, names=column_names, encoding="utf-8")
-
-    df['Hero Name'] = df['Hero Name'].replace({"LÃºcio": "Lucio", "TorbjÃ¶rn": "Torbjorn"})
-    df = df.sort_values(by='Team', ascending=False)
-    return df
-
-def check_file_change(file_to_read: str) -> str:
-    fp = pd.read_csv(file_to_read, nrows=0, encoding="utf-8")
-    return fp.columns.to_list()[0]
-
-def file_len(file_to_read: str) -> int:
-    fp = pd.read_csv(file_to_read, encoding="utf-8")
-    return fp.shape[0]
-
 def update_page(page_list: list, current_page: int) -> str:
     return f"{page_list[current_page]}!A1:Z26"
-
-def export_to_csv(df: pd.DataFrame, file_name: str):
-    df.to_csv(f'CSVs/{file_name}', index=False)
 
 if __name__ == "__main__":
     credentials_exist = exists("credentials.json")
