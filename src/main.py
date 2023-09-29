@@ -1,5 +1,5 @@
 from time import sleep
-from google_sheets_push import update_sheet
+from src.google_sheets_push import update_sheet
 from os.path import exists
 import pandas as pd
 from src.json_functions import get_spreadsheet_id, get_spreadsheet_pages
