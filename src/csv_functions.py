@@ -1,5 +1,4 @@
 import pandas as pd
-import unittest
 
 def read_csv_file(file_to_read: str) -> pd.DataFrame:
     row_data= []
@@ -44,5 +43,10 @@ def file_len(file_to_read: str) -> int:
     return fp.shape[0]
 
 if __name__ == "__main__":
-    assert file_len("F:\programming\OW-to-gs-CSV\src\\test.csv") == 5
+    import os
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    csv_path = os.path.join(dir_path, 'test.csv')
+
+    assert file_len(csv_path) == 5
     print("All tests passed")
