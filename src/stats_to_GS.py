@@ -40,9 +40,9 @@ def get_latest_file() -> str:
     return latest_file
 
 def read_csv_file(file_to_read: str) -> pd.DataFrame:
-    row_data: list[list] = []
-    t1: list = []
-    t2: list = []
+    row_data= []
+    t1 = []
+    t2 = []
 
     column_names = [
             "Player Name",
@@ -70,7 +70,7 @@ def read_csv_file(file_to_read: str) -> pd.DataFrame:
     df = df.sort_values(by='Team', ascending=False)
     return df
 
-def check_file_change(file_to_read: str) -> list[str]:
+def check_file_change(file_to_read: str) -> str:
     fp = pd.read_csv(file_to_read, nrows=0, encoding="utf-8")
     return fp.columns.to_list()[0]
 
@@ -120,11 +120,11 @@ if __name__ == "__main__":
         upload = False
         print("Not uploading to Google Sheets!")
 
-    file: str = get_latest_file()
-    cur_map_temp: list[str] = check_file_change(file)
+    file = get_latest_file()
+    cur_map_temp = check_file_change(file)
 
     while True:
-        cur_map_temp: list[str] = check_file_change(file)
+        cur_map_temp = check_file_change(file)
 
         if cur_map != cur_map_temp :
             cur_map = cur_map_temp
