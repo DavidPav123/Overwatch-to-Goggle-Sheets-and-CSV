@@ -10,13 +10,16 @@ from googleapiclient import discovery
 # Scopes the program is allowed to access
 SCOPES: list[str] = ["https://www.googleapis.com/auth/spreadsheets"]
 
+
 def get_spreadsheet_id():
-    with open("config.json", 'r') as file:
+    with open("config.json", "r") as file:
         data = load(file)
         return data.get("Spreadsheet ID", None)
 
+
 # ID of spreadsheet to modify
 SPREADSHEET_ID: str = get_spreadsheet_id()
+
 
 def update_sheet(values_to_update, range_to_update) -> None:
     creds: Credentials = None
