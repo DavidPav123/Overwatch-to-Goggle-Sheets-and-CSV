@@ -44,9 +44,22 @@ def file_len(file_to_read: str) -> int:
 
 if __name__ == "__main__":
     import os
+    import unittest
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    csv_path = os.path.join(dir_path, 'test.csv')
+    csv_path = os.path.join(dir_path, 'test_files/test.csv')
+    log_path = os.path.join(dir_path, 'test_files/test_log.txt')
 
-    assert file_len(csv_path) == 5
-    print("All tests passed")
+    test_frame = {'Player Name': {'[00:01:10] 70.10': 'Ana'}, 'Hero Name': {'[00:01:10] 70.10': 'Ana'}, 'Damage Dealt': {'[00:01:10] 70.10': 0}, 'Barrier Damage': {'[00:01:10] 70.10': 0}, 'Damage Blocked': {'[00:01:10] 70.10': 0}, 'Damage Taken': {'[00:01:10] 70.10': 0}, 'Deaths': {'[00:01:10] 70.10': 0}, 'Elims': {'[00:01:10] 70.10': 0}, 'Final Blows': {'[00:01:10] 70.10': 0}, 'Env Deaths': {'[00:01:10] 70.10': 0}, 'Env Kills': {'[00:01:10] 70.10': 0}, 'Healing': {'[00:01:10] 70.10': 0}, 'Obj Kills': {'[00:01:10] 70.10': 0}, 'solo kills': {'[00:01:10] 70.10': 0}, 'Ults Earned': {'[00:01:10] 70.10': 0}, 'Ults Used': {'[00:01:10] 70.10': 0}, 'Healing Recived': {'[00:01:10] 70.10': 0}, 'Team': {'[00:01:10] 70.10': 'Team 1'}}
+
+    class TestStringMethods(unittest.TestCase):
+        def test_file_len(self):
+            self.assertEqual(file_len(csv_path), 5)
+
+        def test_read_csv_file(self):
+            self.assertEqual(read_csv_file(log_path).to_dict(), test_frame)
+
+        def test_check_file_change(self):
+            self.assertEqual(check_file_change(log_path),"[00:00:00] Antarctic Peninsula")
+
+    unittest.main()

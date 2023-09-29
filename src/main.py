@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     if credentials_exist:
         try:
-            spreadsheet_id = get_spreadsheet_id()
+            spreadsheet_id = get_spreadsheet_id("config.json")
             if spreadsheet_id == "" or spreadsheet_id == None:
                 print("No spreadsheet ID found!")
             else:
@@ -36,7 +36,7 @@ if __name__ == "__main__":
             print("No spreadsheet ID found!")
         if spreadsheet_id_exists:
             try:
-                pages_to_update_temp = get_spreadsheet_pages()
+                pages_to_update_temp = get_spreadsheet_pages("config.json")
                 if pages_to_update_temp ==  [] or pages_to_update_temp == None:
                     print("No spreadsheet pages found!")
                 else:
