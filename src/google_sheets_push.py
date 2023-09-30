@@ -6,19 +6,14 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.errors import HttpError
 from googleapiclient import discovery
+from json_functions import get_spreadsheet_id
 
 # Scopes the program is allowed to access
 SCOPES: list[str] = ["https://www.googleapis.com/auth/spreadsheets"]
 
 
-def get_spreadsheet_id():
-    with open("config.json", "r") as file:
-        data = load(file)
-        return data.get("Spreadsheet ID", None)
-
-
 # ID of spreadsheet to modify
-SPREADSHEET_ID: str = get_spreadsheet_id()
+SPREADSHEET_ID: str = get_spreadsheet_id("config.json")
 
 
 def update_sheet(values_to_update, range_to_update) -> None:

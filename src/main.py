@@ -1,7 +1,6 @@
 from time import sleep
 from src.google_sheets_push import update_sheet
 from os.path import exists
-import pandas as pd
 from src.json_functions import get_spreadsheet_id, get_spreadsheet_pages
 from src.get_latest_workship_file import get_latest_file
 from src.csv_functions import read_csv_file, export_to_csv, check_file_change, file_len
