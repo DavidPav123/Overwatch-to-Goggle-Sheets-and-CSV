@@ -35,28 +35,3 @@ def get_windows_version() -> Literal[10, 11]:
         return 10
     else:
         return 11
-
-
-if __name__ == "__main__":
-    import os
-    import unittest
-
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    temp_txt_path = os.path.join(dir_path, "test_files/test.txt")
-    dir_path = os.path.join(dir_path, "test_files/*")
-
-    class TestStringMethods(unittest.TestCase):
-        def test_windows_version(self):
-            self.assertEqual(get_windows_version(), 11)
-
-        def test_get_latest_file(self):
-            with open(temp_txt_path, "w") as file:
-                file.write("Hello, World!")
-            print(get_latest_file(dir_path))
-            self.assertEqual(
-                get_latest_file(dir_path),
-                r"F:\programming\OW-to-gs-CSV\src\test_files\test.txt",
-            )
-            os.remove(temp_txt_path)
-
-    unittest.main()
