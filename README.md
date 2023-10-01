@@ -12,3 +12,4 @@
 - If the program accidentally closes or crashes mid-series, once it is reopened, it will not upload again until the next match starts. Once it's reopened, it will overwrite the previous data, so be sure to move the previous data to a safe place before the next match starts.
 - CSV files will automatically be named ***game1.csv, game2.csv, ect*** and will appear in the CSVs folder. If you open a CSV file mid-game, data will not be uploaded to the CSV file until it is closed.
 - If matches end before spreadsheet pages run out, close the program to stop it, all data is automatically uploaded and exported to CSV files.
+- If the prvious match was played on the same map, the code will not switch over.
