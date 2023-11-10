@@ -13,3 +13,4 @@
 - CSV files will automatically be named ***game1.csv, game2.csv, ect*** and will appear in the CSVs folder. If you open a CSV file mid-game, data will not be uploaded to the CSV file until it is closed.
 - If matches end before spreadsheet pages run out, close the program to stop it, all data is automatically uploaded and exported to CSV files.
 - If the prvious match was played on the same map, the code will not switch over.
+- The token will need to be refreshed weekly or an error will occur and no data will be uploaded. This can be done by deleting the ***token.json*** file and going through the authentication process again.
