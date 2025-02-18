@@ -1,4 +1,4 @@
-from pandas import read_csv, DataFrame, notnull
+from pandas import read_csv, DataFrame, notnull  # type: ignore
 
 
 def read_csv_file(file_to_read: str) -> DataFrame:
@@ -43,11 +43,11 @@ def read_csv_file(file_to_read: str) -> DataFrame:
         encoding="utf-8",
     )
 
-    df["Hero Name"] = df["Hero Name"].replace(
+    df["Hero Name"] = df["Hero Name"].replace(  # type: ignore
         {"LÃºcio": "Lucio", "TorbjÃ¶rn": "Torbjorn"}
     )
-    df = df.where(notnull(df), "Not Selected")
-    df = df.sort_values(by="Team", ascending=True)
+    df = df.where(notnull(df), "Not Selected")  # type: ignore
+    df = df.sort_values(by="Team", ascending=True)  # type: ignore
     return df
 
 

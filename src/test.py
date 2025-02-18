@@ -1,8 +1,9 @@
 import os
+from typing import Any
 import unittest
-from src.json_functions import get_spreadsheet_id, get_spreadsheet_pages
-from src.get_latest_workship_file import get_latest_file, get_windows_version
-from src.csv_functions import read_csv_file, export_to_csv, check_file_change, file_len
+from json_functions import get_spreadsheet_id, get_spreadsheet_pages
+from get_latest_workshop_file import get_latest_file, get_windows_version
+from csv_functions import read_csv_file, export_to_csv, check_file_change, file_len
 from pandas import DataFrame
 
 if __name__ == "__main__":
@@ -13,7 +14,7 @@ if __name__ == "__main__":
     csv_path = os.path.join(dir_path, "test_files/test.csv")
     log_path = os.path.join(dir_path, "test_files/test_log.txt")
     temp_csv_path = os.path.join(dir_path, "test_files/temp_test.csv")
-    test_frame = {
+    test_frame: dict[str,dict[str, Any]] = {
         "Player Name": {"[00:01:10] 70.10": "Ana"},
         "Hero Name": {"[00:01:10] 70.10": "Ana"},
         "Damage Dealt": {"[00:01:10] 70.10": 0},
